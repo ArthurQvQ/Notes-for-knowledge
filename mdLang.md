@@ -27,7 +27,7 @@ we can use # for different level title, for example, ## for second title
 
 使用插件paste image ,加快捷键 ctrl+alt+v  ，可以粘贴截图内容
 
-![](2022-01-05-09-54-05.png)
+![](./asset/2022-01-05-09-54-05.png)
 
 代码块展示
 ```javascript {.line-numbers}
