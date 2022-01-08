@@ -12,7 +12,7 @@ we can use # for different level title, for example, ## for second title
 
 **这是粗体**  __这也是粗体__
 
->`***~~这是删除体文字~~***`
+***~~这是删除体文字~~***
 
 >`为什么叫行内代码`
 
@@ -44,3 +44,5 @@ kickArthur = (param) => {
 - [x] list syntax required (any unordered or ordered list supported)
 - [x] this is a complete item
 - [ ] this is an incomplete item
+
+{~~这个是要被替换的内容~>这是替换出来的内容~~}
