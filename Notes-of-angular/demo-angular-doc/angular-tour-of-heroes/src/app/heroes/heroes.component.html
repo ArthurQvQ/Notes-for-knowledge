@@ -1,0 +1,15 @@
+<input type="text" [(ngModel)]="windstorm.name">
+<p>{{windstorm.name | uppercase}}</p>
+
+<div>
+  <ul>
+    <li *ngFor="let hero of heroes" (click)="onSelect(hero)">
+      <span class="badge">{{hero.id}}</span>
+      <span class="heroName">{{hero.name}}</span>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <input type="radio" [(ngModel)]="isChecked" (click)="onClick()">
+</div>

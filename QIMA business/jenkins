@@ -1,0 +1,239 @@
+node() {
+    script {
+        // set JDK env variable
+        env.JAVA_HOME="${tool 'openjdk'}"
+        env.PATH="${env.JAVA_HOME}/bin:${env.PATH}"
+
+        def URL_ASIAN_SPECT = 'https://github.com/asiainspection/'
+        def CREDENT = '5540db2b-369e-4a48-820e-f0970c41dd9a'
+        
+        def infos = params.infos.trim().replace('Back End=', '').replace('Front End=', '').replace('public API','Public-API').split(' ')
+        def branch_var = ''
+        def common_version = ''
+        
+        // format services and version
+        services = [];
+        for (info in infos) {
+            info = info.trim()
+            if (!info) {
+                continue
+            }
+            name = info.split('=')[0]
+            if (info.split('=')[1] && info.split('=')[1].split('-')[1]) {
+                if (name == 'commons') {
+                    version = info.split('=')[1].split('-')[0]
+                } else {
+                    version = info.split('=')[1].split('-')[1]
+                }
+            } else {
+                continue
+            }
+            realName = translateName(name)
+            services.add("${realName}=${version}");
+        }
+        services.unique()
+
+        // update services version
+        for (info in services) {
+            cleanWs()
+
+            name = info.split('=')[0]
+            version = info.split('=')[1]
+
+            if (name == 'commons') {
+                dev_branch = 'master'
+            } else if (name == 'LT') {
+                dev_branch = 'DEVELOPMENT'
+            } else {
+                dev_branch = 'develop'
+            }
+
+            try {
+                stage(name) {
+                    // pull code from remote
+                    git url: "${URL_ASIAN_SPECT}${name}.git",
+                    credentialsId: CREDENT,
+                    branch: dev_branch
+                    
+                    withCredentials([usernamePassword(credentialsId: CREDENT, usernameVariable: "GIT_USERNAME", passwordVariable: "GIT_PASSWORD")]) {
+                        // service LT , create release then update develop
+                        if (name == 'LT') {
+                            def pom = readMavenPom file: 'pom.xml'
+                            def oldVersion = pom.version.split('-')[0]
+                            createRelease(branch_var, oldVersion)
+                        }
+
+                        // service commons, create release then update master
+                        if (name == 'commons') {
+                            def pom = readMavenPom file: 'pom.xml'
+                            common_version = pom.version.split('-')[0]
+                            checkoutBranch("${branch_var}release-${common_version}")
+                            
+                            sh "mvn versions:set -DnewVersion=${common_version}-RELEASE"
+                            pushRemote("${branch_var}release-${common_version}")
+                            
+                            // build common jar
+                            sh "mvn --settings /var/lib/jenkins/settings.xml clean -U deploy -Dmaven.test.failure.ignore=false"
+                        }
+                        
+                        // update develop version
+                        checkoutBranch("${branch_var}${dev_branch}")
+                        updateMainVersion(name, version, common_version)
+                        pushRemote("${branch_var}${dev_branch}")
+                        
+                        if (name != 'LT' && name != 'commons') {
+                            createRelease(branch_var, version)
+                        }
+                    }
+                }
+            } catch (err) {
+                echo "error:${err}"
+                continue
+            }
+        }
+    }
+}
+
+def pushRemote(branch) {
+    sh 'git add .'
+    sh 'git commit -m "update pom version"'
+    sh "git push origin ${branch}"
+}
+
+def translateName(name) {
+    def realName = ''
+    switch (name) {
+        case 'AIMS-services-api':
+        case 'aims-web':
+        case 'AIMS-web':
+        case 'aims-service':
+        case 'AIMS-service':
+        case 'LT-DTO':
+        case 'LT-constant':
+        case 'LT-converter':
+        case 'LT-model':
+        case 'LT-utility':
+        case 'data-service':
+        case 'data-services':
+        case 'data-services-api':
+        case 'doc-service':
+        case 'doc-services-api':
+        case 'document-service':
+        case 'external-service':
+        case 'external-service-api':
+        case 'external-services-api':
+        case 'program-service':
+        case 'program-services-api':
+        case 'program-web':
+            realName = 'LT'
+            break;
+        case 'ACA':
+            realName = 'aca'
+            break
+        case 'b2b-service':
+            realName = 'B2B_DT_Service'
+            break
+        case 'backoffice-portal-service':
+            realName = 'backoffice-portal'
+            break
+        case 'checklist-web':
+            realName = 'checklist'
+            break
+        case 'finance-service':
+        case 'finance-web':
+            realName = 'Finance'
+            break
+        case 'gi-web':
+            realName = 'GI-WEB'
+            break
+        case 'gi-service':
+            realName = 'GI-SERVICE'
+            break
+        case 'irp-web':
+            realName = 'irp'
+            break
+        case 'msg-admin':
+        case 'msg-common':
+        case 'msg-core':
+        case 'msg-jms':
+        case 'msg-service-api':
+            realName = 'qima-msg-util'
+            break
+        case 'param-service':
+        case 'parameter-web':
+            realName = 'parameter-service'
+            break
+        case 'psi-service':
+        case 'psi-web':
+            realName = 'psi'
+            break
+        case 'public API':
+            realName = 'Public-API'
+            break
+        case 'sso-common':
+        case 'sso-management':
+            realName = 'sso-suite'
+            break
+        default:
+            realName = name
+    }
+    return realName
+}
+
+def updateProperty(common_version, path) {
+    def pom = readMavenPom file: path
+    if (pom.properties['commons.version'] && pom.properties['commons.version'].split('-')[0] == common_version) {
+        sh "mvn versions:set-property -Dproperty=commons.version -DnewVersion=${common_version}-RELEASE -f ${path}"
+    } else if (pom.properties['com.ai.commons.version'] && pom.properties['com.ai.commons.version'].split('-')[0] == common_version){
+        sh "mvn versions:set-property -Dproperty=com.ai.commons.version -DnewVersion=${common_version}-RELEASE -f ${path}"
+    }
+}
+
+def updateMainVersion(name, version, common_version) {
+    switch (name) {
+        // update package.json version 
+        case 'aca':
+        case 'CIA-NEW':
+        case 'IPTB-web':
+        case 'auditor-app':
+            def packageJSON = readJSON file: 'package.json'
+            packageJSON['version']=version
+            writeJSON(file: 'package.json', json: packageJSON)
+            break
+        // special services which need enter sub-directories
+        case 'auditor-app-services':
+            sh "mvn versions:set -DnewVersion=${version}-SNAPSHOT -f ./auditor-app-services-api/pom.xml"
+            updateProperty(common_version, './auditor-app-services-api/pom.xml')
+            break
+        case 'final-report-service':
+            sh "mvn versions:set -DnewVersion=${version}-SNAPSHOT -f ./FINAL-REPORT-SERVICE-services-api/pom.xml"
+            updateProperty(common_version, './FINAL-REPORT-SERVICE-services-api/pom.xml')
+            break
+        case 'IPTB-service':
+            sh "mvn versions:set -DnewVersion=${version}-SNAPSHOT -f ./IPTB-SERVICE-services-api/pom.xml"
+            updateProperty(common_version, './IPTB-SERVICE-services-api/pom.xml')
+            break
+        case 'aiparams':
+            sh "mvn versions:set -DnewVersion=${version}-SNAPSHOT -f ./parameter/pom.xml"
+            updateProperty(common_version, './parameter/pom.xml')
+            break
+        // normal services
+        default:
+            sh "mvn versions:set -DnewVersion=${version}-SNAPSHOT"
+            updateProperty(common_version, './pom.xml')
+            break
+    }
+}
+
+def checkoutBranch(branch) {
+    try {
+        sh "git checkout ${branch}"
+    } catch (err) {
+        sh "git checkout -b ${branch}"
+    }
+}
+
+def createRelease(var ,version) {
+    checkoutBranch("${var}release-${version}")
+    sh "git push origin ${var}release-${version}"
+}
