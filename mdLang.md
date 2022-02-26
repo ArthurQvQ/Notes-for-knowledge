@@ -14,7 +14,7 @@ we can use # for different level title, for example, ## for second title
 
 ***~~这是删除体文字~~***
 
->`为什么叫行内代码`
+>为什么叫行内代码
 
 
 这是链接的示例
@@ -24,7 +24,7 @@ we can use # for different level title, for example, ## for second title
 这是图片的示例
 
 ![我不知道这有什么用](https://avatars.githubusercontent.com/u/95906252)
-
+ 
 使用插件paste image ,加快捷键 ctrl+alt+v  ，可以粘贴截图内容
 
 ![](./asset/2022-01-05-09-54-05.png)
