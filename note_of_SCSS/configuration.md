@@ -56,3 +56,6 @@ Sass首先根据CSS spec判断文件的编码格式，然后是@charset声明，
 ```
 ##Placeholder Selector占位符选择器
 Sass支持标准的CSS多行注释`/* */`及单行注释`//`，前者会被完整输出到编译后的CSS文件中，而后者不会
+插值语句也可以在多行注释中使用
+
+#SassScript

@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6d3bf3ae-6fb3-4f8c-bb28-7a64e955c9ea" name="Changes" comment="" />
+    <list default="true" id="ec462b3b-b512-45a6-82fb-17d1295fb756" name="Changes" comment="idea config">
+      <change beforePath="$PROJECT_DIR$/note_of_SCSS/configuration.md" beforeDir="false" afterPath="$PROJECT_DIR$/note_of_SCSS/configuration.md" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitSEFilterConfiguration">
@@ -72,5 +79,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="idea config" />
+    <option name="LAST_COMMIT_MESSAGE" value="idea config" />
   </component>
 </project>
