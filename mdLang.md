@@ -12,7 +12,7 @@ we can use # for different level title, for example, ## for second title
 
 **这是粗体**  __这也是粗体__
 
-***~~这是删除体文字~~***
+~~这是删除体文字~~
 
 >为什么叫行内代码
 
