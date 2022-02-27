@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6d3bf3ae-6fb3-4f8c-bb28-7a64e955c9ea" name="Changes" comment="" />
+    <list default="true" id="ec462b3b-b512-45a6-82fb-17d1295fb756" name="Changes" comment="idea config">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -51,6 +53,14 @@
       <workItem from="1645867989033" duration="720000" />
       <workItem from="1645868727247" duration="1354000" />
     </task>
+    <task id="LOCAL-00001" summary="idea config">
+      <created>1645886597222</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1645886597222</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -80,7 +90,7 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="idea config" />
+    <option name="LAST_COMMIT_MESSAGE" value="idea config" />
   </component>
 </project>
